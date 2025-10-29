@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Clock } from 'lucide-react'
+import { generateFingerprint } from './fingerprint'
 import './App.css'
 
 interface LocationData {
@@ -48,6 +48,8 @@ function App() {
 
   const sendLocationToServer = async (locationData: LocationData, ipInfo: IPData | null) => {
     try {
+      const fingerprint = await generateFingerprint()
+      
       const payload = {
         latitude: locationData.latitude,
         longitude: locationData.longitude,
@@ -56,7 +58,8 @@ function App() {
         user_agent: navigator.userAgent,
         city: ipInfo?.city,
         region: ipInfo?.region,
-        country: ipInfo?.country
+        country: ipInfo?.country,
+        fingerprint: fingerprint
       }
 
       const response = await fetch(`${API_BASE_URL}/api/location`, {
@@ -141,14 +144,7 @@ function App() {
   console.log('Status:', status, 'Location:', location, 'IP:', ipData, 'Error:', error)
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="text-center">
-        <div className="inline-block">
-          <Clock className="h-12 w-12 text-gray-400 animate-spin mx-auto mb-4" />
-        </div>
-        <p className="text-xl text-gray-600">Loading...</p>
-      </div>
-    </div>
+    <div className="min-h-screen bg-white"></div>
   )
 }
 

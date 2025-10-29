@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 import uuid
 
 app = FastAPI()
@@ -26,6 +26,7 @@ class LocationData(BaseModel):
     city: Optional[str] = None
     region: Optional[str] = None
     country: Optional[str] = None
+    fingerprint: Optional[Dict[str, Any]] = None
 
 class LocationResponse(BaseModel):
     id: str
@@ -37,6 +38,7 @@ class LocationResponse(BaseModel):
     city: Optional[str]
     region: Optional[str]
     country: Optional[str]
+    fingerprint: Optional[Dict[str, Any]]
     timestamp: str
 
 @app.get("/healthz")
@@ -58,6 +60,7 @@ async def save_location(location: LocationData):
         "city": location.city,
         "region": location.region,
         "country": location.country,
+        "fingerprint": location.fingerprint,
         "timestamp": timestamp
     }
     

